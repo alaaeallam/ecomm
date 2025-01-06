@@ -1,9 +1,9 @@
-import { Webhook } from 'svix'
-import { headers } from 'next/headers'
-import { clerkClient, WebhookEvent } from '@clerk/nextjs/server'
-import { Role, User } from '@prisma/client'
-import { db } from '@/lib/db'
-import { use } from 'react'
+import { Webhook } from "svix";
+import { headers } from "next/headers";
+import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
+import { User } from "@prisma/client";
+import { db } from "@/lib/db";
+
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET
@@ -48,40 +48,42 @@ export async function POST(req: Request) {
     })
   }
 
-  // Do something with payload
-  // For this guide, log payload to console
-  const { id } = evt.data
-  const eventType = evt.type
-  if (evt.type === 'user.created' || evt.type === 'user.updated') {
-    const data= JSON.parse(body).data;
-    console.log('user data',data)
-    const user: Partial<User>={
-      id:data.id,
+  // When user is created or updated
+  if (evt.type === "user.created" || evt.type === "user.updated") {
+    // Parse the incoming event data
+    const data = JSON.parse(body).data;
+
+    // Create a user object with relevant properties
+    const user: Partial<User> = {
+      id: data.id,
       name: `${data.first_name} ${data.last_name}`,
       email: data.email_addresses[0].email_address,
-      picture:data.image_url,
+      picture: data.image_url,
     };
-    if(!user) return;
-    const dbUser= await db.user.upsert({
-      where:{
-        email:user.email,
+    // If user data is invalid, exit the function
+    if (!user) return;
+
+    // Upsert user in the database (update if exists, create if not)
+    const dbUser = await db.user.upsert({
+      where: {
+        email: user.email,
       },
-      update:user,
-      create:{
-        id:user.id!,
-        name:user.name!,
-        email:user.email!,
-        picture:user.picture!,
-        role:user.role || "USER",
-      }
+      update: user,
+      create: {
+        id: user.id!,
+        name: user.name!,
+        email: user.email!,
+        picture: user.picture!,
+        role: user.role || "USER", // Default role to "USER" if not provided
+      },
     });
-    await clerkClient.users.updateUserMetadata(data.id,{
+
+    // Update user's metadata in Clerk with the role information
+    await clerkClient.users.updateUserMetadata(data.id, {
       privateMetadata: {
-        role: dbUser.role || 'USER'
-      }
-    })
+        role: dbUser.role || "USER", // Default role to "USER" if not present in dbUser
+      },
+    });
   }
-
-
   return new Response('Webhook received', { status: 200 })
 }

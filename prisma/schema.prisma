@@ -15,11 +15,11 @@ enum Role{
   SELLER
 }
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
+  id      String @id @default(uuid())
+  name    String
+  email   String @unique
   picture String @db.Text
-  role Role @default(USER)
+  role    Role   @default(USER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
