@@ -1,6 +1,9 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { WebhookEvent } from '@clerk/nextjs/server'
+import { clerkClient, WebhookEvent } from '@clerk/nextjs/server'
+import { Role, User } from '@prisma/client'
+import { db } from '@/lib/db'
+import { use } from 'react'
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET
@@ -49,8 +52,36 @@ export async function POST(req: Request) {
   // For this guide, log payload to console
   const { id } = evt.data
   const eventType = evt.type
-  console.log(`Received webhook with ID ${id} and event type of ${eventType}`)
-  console.log('Webhook payload:', body)
+  if (evt.type === 'user.created' || evt.type === 'user.updated') {
+    const data= JSON.parse(body).data;
+    console.log('user data',data)
+    const user: Partial<User>={
+      id:data.id,
+      name: `${data.first_name} ${data.last_name}`,
+      email: data.email_addresses[0].email_address,
+      picture:data.image_url,
+    };
+    if(!user) return;
+    const dbUser= await db.user.upsert({
+      where:{
+        email:user.email,
+      },
+      update:user,
+      create:{
+        id:user.id!,
+        name:user.name!,
+        email:user.email!,
+        picture:user.picture!,
+        role:user.role || "USER",
+      }
+    });
+    await clerkClient.users.updateUserMetadata(data.id,{
+      privateMetadata: {
+        role: dbUser.role || 'USER'
+      }
+    })
+  }
+
 
   return new Response('Webhook received', { status: 200 })
 }
