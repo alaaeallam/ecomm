@@ -47,8 +47,8 @@ export async function POST(req: Request) {
     })
   }
 
-  // Prevent infinite loop by checking if event originated from Clerk
-  if (payload?.data?.privateMetadata?.role) {
+  // Prevent infinite loop by checking if event originated from this handler
+  if (payload?.data?.privateMetadata?.source === "webhook-handler") {
     return new Response('Ignoring self-triggered webhook', { status: 200 })
   }
 
@@ -78,11 +78,12 @@ export async function POST(req: Request) {
       },
     });
     
-    // Update user's metadata in Clerk
+    // Update user's metadata in Clerk with source flag
     const client = await clerkClient()
     await client.users.updateUserMetadata(data.id, {
       privateMetadata: {
         role: dbUser.role || "USER",
+        source: "webhook-handler", // Prevents re-triggering
       },
     });
   }
