@@ -12,7 +12,7 @@ export default async function AdminDashboardLayout({children}:{children:ReactNod
     <div className="w-full h-full">
       
       {/*Sidebar */}
-      <Sidebar/>
+      <Sidebar isAdmin/>
       <div className="w-full ml-[300px]">
         {/**Header */}
         <Header/>

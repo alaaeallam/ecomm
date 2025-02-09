@@ -19,6 +19,7 @@ const Sidebar:FC<SidebarProps>=async({isAdmin})=>{
             {
                 isAdmin && <SidebarNavAdmin menuLinks={adminDashboardSidebarOptions}/>
             }
+            
         </div>
     )
 }
