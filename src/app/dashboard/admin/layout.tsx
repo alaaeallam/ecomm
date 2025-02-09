@@ -1,9 +1,21 @@
+import Header from "@/components/dashboard/header/header";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import {ReactNode} from "react";
-export default function SellerDashboardLayout({children}:{children:ReactNode}) {
+export default async function AdminDashboardLayout({children}:{children:ReactNode}) {
+  const user =await currentUser()
+      if(!user || user?.privateMetadata.role !== 'ADMIN')redirect('/');
   return (
-    <div className="p-5">
+    // Block non admin for accessing the admin dashboard
+    
+    <div className="w-full h-full">
       
-      <h1 className=" text-blue-500 font-barlow">{children}</h1>
+      {/*Sidebar */}
+      <div className="w-full ml-[300px]">
+        {/**Header */}
+        <Header/>
+        <div className="w-full mt-[75px] p-4">{children}</div>
+      </div>
       
     </div>
   );

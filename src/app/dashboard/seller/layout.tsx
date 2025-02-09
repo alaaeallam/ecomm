@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-export default function AdminDashboardLayout({children}:{children:ReactNode}) {
+export default function SellerDashboardLayout({children}:{children:ReactNode}) {
   return (
     <div className="p-5">
       
