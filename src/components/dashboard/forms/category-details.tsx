@@ -14,13 +14,15 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import ImageUpload from "../shared/image-upload";
 
 
 interface CategoryDetailsProps {
     data?: Category;
+    cloudinary_key:string;
   }
 
-  const CategoryDetails: FC<CategoryDetailsProps> = ({ data }) => {
+  const CategoryDetails: FC<CategoryDetailsProps> = ({ data,cloudinary_key }) => {
     const form = useForm<z.infer<typeof CategoryFormSchema>>({
       mode: "onChange", // Form validation mode
       resolver: zodResolver(CategoryFormSchema), // Resolver for form validation
@@ -67,13 +69,14 @@ interface CategoryDetailsProps {
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-4"
             >
-              {/* <FormField
+              <FormField
                 control={form.control}
                 name="image"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <ImageUpload
+                        cloudinary_key={cloudinary_key}
                         type="profile"
                         value={field.value.map((image) => image.url)}
                         disabled={isLoading}
@@ -90,7 +93,7 @@ interface CategoryDetailsProps {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
               <FormField
                 disabled={isLoading}
                 control={form.control}
