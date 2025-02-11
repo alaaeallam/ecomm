@@ -15,7 +15,11 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import ImageUpload from "../shared/image-upload";
+import { upsertCategory } from "@/queries/category";
 
+import {v4} from 'uuid'
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface CategoryDetailsProps {
     data?: Category;
@@ -23,6 +27,8 @@ interface CategoryDetailsProps {
   }
 
   const CategoryDetails: FC<CategoryDetailsProps> = ({ data,cloudinary_key }) => {
+    const { toast } = useToast(); // Hook for displaying toast messages
+    const router = useRouter(); // Hook for routing
     const form = useForm<z.infer<typeof CategoryFormSchema>>({
       mode: "onChange", // Form validation mode
       resolver: zodResolver(CategoryFormSchema), // Resolver for form validation
@@ -49,7 +55,40 @@ interface CategoryDetailsProps {
     }, [data, form]);
     // Submit handler for form submission
     const handleSubmit = async (values: z.infer<typeof CategoryFormSchema>) => {
-      console.log(values)
+      try {
+        // Upserting category data
+        const response = await upsertCategory({
+          id: data?.id ? data.id : v4(),
+          name: values.name,
+          image: values.image[0].url,
+          url: values.url,
+          featured: values.featured,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+  
+        // Displaying success message
+        toast({
+          title: data?.id
+            ? "Category has been updated."
+            : `Congratulations! '${response?.name}' is now created.`,
+        });
+  
+        // Redirect or Refresh data
+        if (data?.id) {
+          router.refresh();
+        } else {
+          router.push("/dashboard/admin/categories");
+        }
+      } catch (error: any) {
+        // Handling form submission errors
+        console.log(error);
+        toast({
+          variant: "destructive",
+          title: "Oops!",
+          description: error.toString(),
+        });
+      }
     }
   
     return(
