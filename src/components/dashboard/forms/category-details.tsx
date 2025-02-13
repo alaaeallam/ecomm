@@ -23,10 +23,10 @@ import { useRouter } from "next/navigation";
 
 interface CategoryDetailsProps {
     data?: Category;
-    cloudinary_key:string;
+  
   }
 
-  const CategoryDetails: FC<CategoryDetailsProps> = ({ data,cloudinary_key }) => {
+  const CategoryDetails: FC<CategoryDetailsProps> = ({ data }) => {
     const { toast } = useToast(); // Hook for displaying toast messages
     const router = useRouter(); // Hook for routing
     const form = useForm<z.infer<typeof CategoryFormSchema>>({
@@ -115,7 +115,7 @@ interface CategoryDetailsProps {
                   <FormItem>
                     <FormControl>
                       <ImageUpload
-                        cloudinary_key={cloudinary_key}
+                        
                         type="profile"
                         value={field.value.map((image) => image.url)}
                         disabled={isLoading}
