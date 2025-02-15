@@ -45,7 +45,7 @@ import {
 } from "lucide-react";
 
 // Queries
-// import { deleteCategory, getCategory } from "@/queries/category";
+import { deleteCategory, getCategory } from "@/queries/category";
 
 // Tanstack React Table
 import { ColumnDef } from "@tanstack/react-table";
@@ -151,11 +151,11 @@ const CellActions: React.FC<CellActionsProps> = ({ rowData }) => {
                   {/* Store details component */}
                   <CategoryDetails data={{ ...rowData }} />
                 </CustomModal>,
-                // async () => {
-                //   return {
-                //     rowData: await getCategory(rowData?.id),
-                //   };
-                // }
+                async () => {
+                  return {
+                    rowData: await getCategory(rowData?.id),
+                  };
+                }
               );
             }}
           >
@@ -187,7 +187,7 @@ const CellActions: React.FC<CellActionsProps> = ({ rowData }) => {
             className="bg-destructive hover:bg-destructive mb-2 text-white"
             onClick={async () => {
               setLoading(true);
-              // await deleteCategory(rowData.id);
+              await deleteCategory(rowData.id);
               toast({
                 title: "Deleted category",
                 description: "The category has been deleted.",

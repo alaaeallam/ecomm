@@ -126,7 +126,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
             className="w-full h-full rounded-lg object-cover"
           />
         )}
-        <CldUploadWidget onSuccess={onUpload} uploadPreset="ufb48euh">
+        <CldUploadWidget onSuccess={onUpload} uploadPreset="o3eq2n2u">
           {({ open }) => {
             const onClick = () => {
               open();
@@ -190,7 +190,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
               </div>
             ))}
         </div>
-        <CldUploadWidget onSuccess={onUpload} uploadPreset="ufb48euh">
+        <CldUploadWidget onSuccess={onUpload} uploadPreset="o3eq2n2u">
           {({ open }) => {
             const onClick = () => {
               open();
