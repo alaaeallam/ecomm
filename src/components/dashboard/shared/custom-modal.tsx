@@ -39,7 +39,7 @@ const CustomModal = ({
       >
         <DialogHeader className="pt-8 text-left">
           {heading && (
-            <DialogTitle className="text-2xl font-bold">{heading}!</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">{heading}</DialogTitle>
           )}
           {subheading && <DialogDescription>{subheading}</DialogDescription>}
 
