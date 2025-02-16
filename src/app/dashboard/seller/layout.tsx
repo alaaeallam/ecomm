@@ -1,10 +1,15 @@
-import {ReactNode} from "react";
-export default function SellerDashboardLayout({children}:{children:ReactNode}) {
-  return (
-    <div className="p-5">
-      
-      <h1 className=" text-blue-500 font-barlow">{children}</h1>
-      
-    </div>
-  );
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { ReactNode } from "react";
+
+export default async function SellerDashboardLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  // Block non sellers from accessing the seller dashboard
+  const user = await currentUser();
+
+  if (user?.privateMetadata.role !== "SELLER") redirect("/");
+  return <div>{children}</div>;
 }

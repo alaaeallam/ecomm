@@ -71,21 +71,19 @@ model Store {
   cover                               String
   status                              StoreStatus @default(PENDING)
   averageRating                       Float       @default(0)
-  numReviews                          Int         @default(0)
   featured                            Boolean     @default(false)
-  returnPolicy                        String      @default("Return in 30 days.")
-  defaultShippingService              String      @default("International Delivery")
-  defaultShippingFeePerItem           Float       @default(0)
+  returnPolicy                        String?
+  defaultShippingService              String?
+  defaultShippingFeePerItem           Float?
   defaultShippingFeeForAdditionalItem Float       @default(0)
-  defaultShippingFeePerKg             Float       @default(0)
-  defaultShippingFeeFixed             Float       @default(0)
-  defaultDeliveryTimeMin              Int         @default(7)
-  defaultDeliveryTimeMax              Int         @default(31)
+  defaultDeliveryTimeMin              Int
+  defaultDeliveryTimeMax              Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  userId    String
-  user      User     @relation("UserStores", fields: [userId], references: [id])
+
+  userId String
+  user   User   @relation("UserStores", fields: [userId], references: [id])
 
   @@index([userId])
 }
