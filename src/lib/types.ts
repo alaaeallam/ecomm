@@ -18,7 +18,7 @@ import {
 } from "@prisma/client";
 
 import { getAllSubCategories } from "@/queries/subCategory";
-import { string } from "zod";
+
 // import { getHomeFeaturedCategories } from "@/queries/home";
 
 export interface DashboardSidebarMenuInterface {
